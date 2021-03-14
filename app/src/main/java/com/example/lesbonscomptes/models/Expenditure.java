@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class Expenditure {
 
+    private final static String tableName = "expenditures";
+
     private Long id;
     private float cost;
     private Date date;
@@ -49,5 +51,19 @@ public class Expenditure {
 
     public void setPayerId(Long payerId) {
         this.payerId = payerId;
+    }
+
+    public static String createQuery(){
+        return
+                "CREATE TABLE "+ tableName + " ( " +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT , " +
+                    "cost REAL NOT NULL," +
+                    "payer_id" + " INTEGER NOT NULL," +
+                    "date TEXT NOT NULL," +
+                    "FOREIGN KEY (payer_id) references members(id))";
+    }
+
+    public static String dropQuery(){
+        return "DROP TABLE IF EXISTS " + tableName;
     }
 }

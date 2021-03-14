@@ -2,6 +2,8 @@ package com.example.lesbonscomptes.models;
 
 public class Group {
 
+    private final static String tableName = "groups";
+
     private Long id;
     private String name;
 
@@ -27,5 +29,16 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public static String createQuery(){
+        return
+                "CREATE TABLE "+ tableName + " ( " +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT , " +
+                        "name TEXT NOT NULL)";
+    }
+
+    public static String dropQuery(){
+        return "DROP TABLE IF EXISTS " + tableName;
     }
 }

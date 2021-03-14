@@ -2,17 +2,19 @@ package com.example.lesbonscomptes.models;
 
 public class Member {
 
-    private Long id;
-    private Long expenditureId;
-    private Long contactId;
+    private final static String tableName = "members";
 
-    public Member() {
+    private Long id;
+    private String name;
+    private String phone;
+
+    public Member(Long id, String name, String phone) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
     }
 
-    public Member(Long id, Long expenditureId, Long contactId) {
-        this.id = id;
-        this.expenditureId = expenditureId;
-        this.contactId = contactId;
+    public Member() {
     }
 
     public Long getId() {
@@ -23,19 +25,33 @@ public class Member {
         this.id = id;
     }
 
-    public Long getExpenditureId() {
-        return expenditureId;
+    public String getName() {
+        return name;
     }
 
-    public void setExpenditureId(Long expenditureId) {
-        this.expenditureId = expenditureId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Long getContactId() {
-        return contactId;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setContactId(Long contactId) {
-        this.contactId = contactId;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public static String createQuery(){
+        return
+                "CREATE TABLE "+ tableName + " ( " +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT , " +
+                        "name TEXT NOT NULL," +
+                        "phone TEXT NOT NULL," +
+                        "group_id INTEGER NOT NULL," +
+                        "FOREIGN KEY(group_id) references groups(id));";
+    }
+
+    public static String dropQuery(){
+        return "DROP TABLE IF EXISTS " + tableName;
     }
 }
