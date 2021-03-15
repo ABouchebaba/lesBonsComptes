@@ -12,7 +12,7 @@ import com.example.lesbonscomptes.models.Participant;
 public class DbHelper extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "les_bons_comptes";
-    private final static int DB_VERSION = 1;
+    private final static int DB_VERSION = 2;
 
     public DbHelper ( Context context ) {
         super ( context , DB_NAME , null , DB_VERSION ) ;
@@ -20,10 +20,10 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @ Override
     public void onCreate ( SQLiteDatabase db ) {
-        db.execSQL (Group.createQuery() ) ;
-        db.execSQL (Member.createQuery() ) ;
-        db.execSQL (Expenditure.createQuery() ) ;
-        db.execSQL (Participant.createQuery() ) ;
+        db.execSQL(Group.createQuery() ) ;
+        db.execSQL(Member.createQuery() ) ;
+        db.execSQL(Expenditure.createQuery() ) ;
+        db.execSQL(Participant.createQuery() ) ;
     }
 
     @ Override
@@ -36,4 +36,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
         onCreate ( db ) ;
     }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.execSQL("PRAGMA foreign_keys=ON;");
+    }
+
+//    @Override
+//    public void onOpen(SQLiteDatabase db){
+//        super.onOpen(db);
+//        db.execSQL("PRAGMA foreign_keys=ON");
+//    }
 }
