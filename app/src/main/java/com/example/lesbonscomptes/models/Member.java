@@ -132,6 +132,28 @@ public class Member {
         return members;
     }
 
+    public static List<Member> findByGroupId(DbHelper db, Long groupId){
+        String[] columns = new String[]{"id", "name", "phone", "group_id"};
+        String[] sArgs = new String[]{""+groupId};
+
+        Cursor cursor = db.getReadableDatabase()
+                .query(TABLE_NAME, columns, "group_id = ?", sArgs, null,null,null);
+
+        List<Member> members = new ArrayList<>();
+
+        while (cursor.moveToNext()){
+            Long tmp_id = cursor.getLong(cursor.getColumnIndex("id"));
+            String tmp_name = cursor.getString(cursor.getColumnIndex("name"));
+            String tmp_phone = cursor.getString(cursor.getColumnIndex("phone"));
+            Long tmp_group_id = cursor.getLong(cursor.getColumnIndex("group_id"));
+
+            members.add(new Member(tmp_id, tmp_name, tmp_phone, tmp_group_id));
+        }
+        cursor.close();
+
+        return members;
+    }
+
     public static int delete(DbHelper dbHelper, Long id){
         String[] sArgs = new String[]{""+id};
         return dbHelper.getWritableDatabase().delete(TABLE_NAME, "id = ?", sArgs);

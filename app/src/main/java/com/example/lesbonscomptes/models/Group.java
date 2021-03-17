@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.lesbonscomptes.db.DbHelper;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,5 +114,24 @@ public class Group {
 
     public static int delete(DbHelper dbHelper){
         return dbHelper.getWritableDatabase().delete(TABLE_NAME, "1",  null);
+    }
+
+    public static void testFields(){
+        Field[] fields = Group.class.getDeclaredFields();
+
+        for (Field f : fields){
+            System.out.println("_____________________________________________");
+            System.out.println("getName -- " + f.getName());
+            System.out.println("getType().getCanonicalName -- " + f.getType().getCanonicalName());
+            System.out.println("getType().getName -- " + f.getType().getName());
+            System.out.println("getType().getSimpleName -- " + f.getType().getSimpleName());
+            System.out.println("getType().getModifiers -- " + f.getType().getModifiers());
+            System.out.println("getModifiers -- " + f.getModifiers());
+            System.out.println("getDeclaringClass -- " + f.getDeclaringClass());
+            System.out.println("getGenericType -- " + f.getGenericType());
+            System.out.println("toString -- " + f.toString());
+            System.out.println("isAccessible -- " + f.isAccessible());
+        }
+
     }
 }

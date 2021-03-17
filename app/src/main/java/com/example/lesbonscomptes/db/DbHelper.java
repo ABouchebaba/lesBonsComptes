@@ -12,7 +12,7 @@ import com.example.lesbonscomptes.models.Participant;
 public class DbHelper extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "les_bons_comptes";
-    private final static int DB_VERSION = 2;
+    private final static int DB_VERSION = 3;
 
     public DbHelper ( Context context ) {
         super ( context , DB_NAME , null , DB_VERSION ) ;

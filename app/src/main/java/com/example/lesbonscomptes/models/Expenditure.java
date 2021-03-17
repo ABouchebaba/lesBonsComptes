@@ -18,12 +18,14 @@ public class Expenditure {
     private float cost;
     private Date date;
     private Long payerId;
+    private Long groupId;
 
-    public Expenditure(Long id, float cost, Date date, Long payerId) {
+    public Expenditure(Long id, float cost, Date date, Long payerId, Long groupId) {
         this.id = id;
         this.cost = cost;
         this.date = date;
         this.payerId = payerId;
+        this.groupId = groupId;
     }
 
     public Expenditure() {
@@ -61,14 +63,24 @@ public class Expenditure {
         this.payerId = payerId;
     }
 
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
     public static String createQuery(){
         return
                 "CREATE TABLE "+ TABLE_NAME + " ( " +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT , " +
                     "cost REAL NOT NULL," +
                     "payer_id" + " INTEGER NOT NULL," +
+                    "group_id" + " INTEGER NOT NULL," +
                     "date TEXT NOT NULL," +
-                    "FOREIGN KEY (payer_id) references members(id) ON DELETE CASCADE)";
+                    "FOREIGN KEY (payer_id) references members(id) ON DELETE CASCADE,"+
+                    "FOREIGN KEY (group_id) references groups(id) ON DELETE CASCADE)";
     }
 
     public static String dropQuery(){
@@ -80,6 +92,7 @@ public class Expenditure {
         contentValues.put("id", id);
         contentValues.put("cost", cost);
         contentValues.put("payer_id", payerId);
+        contentValues.put("group_id", groupId);
         contentValues.put("date", date.toString());
 
         db.getWritableDatabase()
@@ -92,7 +105,7 @@ public class Expenditure {
     }
 
     public static Expenditure find(DbHelper db, Long id){
-        String[] columns = new String[]{"id", "cost", "payer_id", "date"};
+        String[] columns = new String[]{"id", "cost", "payer_id", "group_id", "date"};
         String[] sArgs = new String[]{""+id};
 
         Cursor cursor = db.getReadableDatabase()
@@ -105,14 +118,15 @@ public class Expenditure {
         Long tmp_id = cursor.getLong(cursor.getColumnIndex("id"));
         float tmp_cost = cursor.getFloat(cursor.getColumnIndex("cost"));
         Long tmp_payer_id = cursor.getLong(cursor.getColumnIndex("payer_id"));
+        Long tmp_group_id = cursor.getLong(cursor.getColumnIndex("group_id"));
         String tmp_date = cursor.getString(cursor.getColumnIndex("date"));
 
         cursor.close();
-        return new Expenditure(tmp_id, tmp_cost, new Date(tmp_date) , tmp_payer_id);
+        return new Expenditure(tmp_id, tmp_cost, new Date(tmp_date) , tmp_payer_id, tmp_group_id);
     }
 
     public static List<Expenditure> find(DbHelper db){
-        String[] columns = new String[]{"id", "cost", "payer_id", "date"};
+        String[] columns = new String[]{"id", "cost", "payer_id", "group_id", "date"};
 
         Cursor cursor = db.getReadableDatabase()
                 .query(TABLE_NAME, columns, null, null, null,null,null);
@@ -123,9 +137,33 @@ public class Expenditure {
             Long tmp_id = cursor.getLong(cursor.getColumnIndex("id"));
             float tmp_cost = cursor.getFloat(cursor.getColumnIndex("cost"));
             Long tmp_payer_id = cursor.getLong(cursor.getColumnIndex("payer_id"));
+            Long tmp_group_id = cursor.getLong(cursor.getColumnIndex("group_id"));
             String tmp_date = cursor.getString(cursor.getColumnIndex("date"));
 
-            expenditures.add(new Expenditure(tmp_id, tmp_cost, new Date(tmp_date) , tmp_payer_id));
+            expenditures.add(new Expenditure(tmp_id, tmp_cost, new Date(tmp_date) , tmp_payer_id, tmp_group_id));
+        }
+        cursor.close();
+
+        return expenditures;
+    }
+
+    public static List<Expenditure> findByGroupId(DbHelper db, Long groupId){
+        String[] columns = new String[]{"id", "cost", "payer_id", "group_id", "date"};
+        String[] sArgs = new String[]{""+groupId};
+
+        Cursor cursor = db.getReadableDatabase()
+                .query(TABLE_NAME, columns, "group_id = ?", sArgs, null,null,null);
+
+        List<Expenditure> expenditures = new ArrayList<>();
+
+        while (cursor.moveToNext()){
+            Long tmp_id = cursor.getLong(cursor.getColumnIndex("id"));
+            float tmp_cost = cursor.getFloat(cursor.getColumnIndex("cost"));
+            Long tmp_payer_id = cursor.getLong(cursor.getColumnIndex("payer_id"));
+            Long tmp_group_id = cursor.getLong(cursor.getColumnIndex("group_id"));
+            String tmp_date = cursor.getString(cursor.getColumnIndex("date"));
+
+            expenditures.add(new Expenditure(tmp_id, tmp_cost, new Date(tmp_date) , tmp_payer_id, tmp_group_id));
         }
         cursor.close();
 
