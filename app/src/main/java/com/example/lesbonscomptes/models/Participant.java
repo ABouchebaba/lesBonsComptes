@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Participant {
 
-    private final static String TABLE_NAME = "participants";
+    protected final static String TABLE_NAME = "participants";
 
     private Long id;
     private Long expenditureId;
@@ -57,14 +57,14 @@ public class Participant {
                 "expenditure_id" + " INTEGER NOT NULL," +
                 "member_id INTEGER NOT NULL," +
                 "FOREIGN KEY (expenditure_id) references expenditures(id) ON DELETE CASCADE," +
-                "FOREIGN KEY (member_id) references members(id) ON DELETE CASCADE)";
+                "FOREIGN KEY (member_id) references members(id) ON DELETE CASCADE);";
     }
 
     public static String dropQuery(){
-        return "DROP TABLE IF EXISTS " + TABLE_NAME;
+        return "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
     }
 
-    public void save(DbHelper db){
+    public Participant save(DbHelper db){
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", id);
         contentValues.put("expenditure_id", expenditureId);
@@ -77,6 +77,25 @@ public class Participant {
                         contentValues,
                         SQLiteDatabase.CONFLICT_REPLACE);
 
+        return getLastInserted(db);
+    }
+
+    private Participant getLastInserted(DbHelper db){
+
+        Cursor cursor = db.getReadableDatabase()
+                .rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = last_insert_rowid();", null);
+
+        // not found
+        if (cursor.getCount() == 0) return null;
+
+        cursor.moveToFirst();
+        Long tmp_id = cursor.getLong(cursor.getColumnIndex("id"));
+        Long tmp_expenditure_id = cursor.getLong(cursor.getColumnIndex("expenditure_id"));
+        Long tmp_member_id = cursor.getLong(cursor.getColumnIndex("member_id"));
+
+        cursor.close();
+
+        return new Participant(tmp_id, tmp_expenditure_id, tmp_member_id);
     }
 
     public static Participant find(DbHelper db, Long id){
@@ -119,21 +138,21 @@ public class Participant {
         return participants;
     }
 
-    public static List<Member> findMembersByExpenditureId(DbHelper db, Long expenditureId){
+    public static List<Participant> findByExpenditureId(DbHelper db, long expenditureId){
         String[] columns = new String[]{"id", "expenditure_id", "member_id"};
         String[] sArgs = new String[]{""+expenditureId};
 
         Cursor cursor = db.getReadableDatabase()
                 .query(TABLE_NAME, columns, "expenditure_id = ?", sArgs, null,null,null);
 
-        List<Member> participants = new ArrayList<>();
+        List<Participant> participants = new ArrayList<>();
 
         while (cursor.moveToNext()){
-//            Long tmp_id = cursor.getLong(cursor.getColumnIndex("id"));
-//            Long tmp_expenditure_id = cursor.getLong(cursor.getColumnIndex("expenditure_id"));
+            Long tmp_id = cursor.getLong(cursor.getColumnIndex("id"));
+            Long tmp_expenditure_id = cursor.getLong(cursor.getColumnIndex("expenditure_id"));
             Long tmp_member_id = cursor.getLong(cursor.getColumnIndex("member_id"));
 
-            participants.add(Member.find(db, tmp_member_id));
+            participants.add(new Participant(tmp_id, tmp_expenditure_id, tmp_member_id));
         }
         cursor.close();
 
@@ -148,6 +167,4 @@ public class Participant {
     public static int delete(DbHelper dbHelper){
         return dbHelper.getWritableDatabase().delete(TABLE_NAME, "1",  null);
     }
-
-
 }

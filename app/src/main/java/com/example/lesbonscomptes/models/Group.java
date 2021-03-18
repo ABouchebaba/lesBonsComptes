@@ -6,16 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.lesbonscomptes.db.DbHelper;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
 
     private final static String TABLE_NAME = "groups";
-    private final static String[] COLUMNS = new String[]{
-            "id", "name"
-    };
 
     private Long id;
     private String name;
@@ -55,7 +51,7 @@ public class Group {
         return "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
-    public void save(DbHelper db){
+    public Group save(DbHelper db){
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", id);
         contentValues.put("name", name);
@@ -67,6 +63,23 @@ public class Group {
                         contentValues,
                         SQLiteDatabase.CONFLICT_REPLACE);
 
+        return getLastInserted(db);
+    }
+
+    private Group getLastInserted(DbHelper db){
+
+        Cursor cursor = db.getReadableDatabase()
+                .rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = last_insert_rowid();", null);
+
+        // not found
+        if (cursor.getCount() == 0) return null;
+
+        cursor.moveToFirst();
+        Long tmp_id = cursor.getLong(cursor.getColumnIndex("id"));
+        String tmp_name = cursor.getString(cursor.getColumnIndex("name"));
+
+        cursor.close();
+        return new Group(tmp_id, tmp_name);
     }
 
     public static Group find(DbHelper db, Long id){
@@ -114,24 +127,5 @@ public class Group {
 
     public static int delete(DbHelper dbHelper){
         return dbHelper.getWritableDatabase().delete(TABLE_NAME, "1",  null);
-    }
-
-    public static void testFields(){
-        Field[] fields = Group.class.getDeclaredFields();
-
-        for (Field f : fields){
-            System.out.println("_____________________________________________");
-            System.out.println("getName -- " + f.getName());
-            System.out.println("getType().getCanonicalName -- " + f.getType().getCanonicalName());
-            System.out.println("getType().getName -- " + f.getType().getName());
-            System.out.println("getType().getSimpleName -- " + f.getType().getSimpleName());
-            System.out.println("getType().getModifiers -- " + f.getType().getModifiers());
-            System.out.println("getModifiers -- " + f.getModifiers());
-            System.out.println("getDeclaringClass -- " + f.getDeclaringClass());
-            System.out.println("getGenericType -- " + f.getGenericType());
-            System.out.println("toString -- " + f.toString());
-            System.out.println("isAccessible -- " + f.isAccessible());
-        }
-
     }
 }

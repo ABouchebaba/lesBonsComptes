@@ -74,7 +74,7 @@ public class Member {
         return "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
-    public void save(DbHelper db){
+    public Member save(DbHelper db){
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", id);
         contentValues.put("name", name);
@@ -88,6 +88,26 @@ public class Member {
                         contentValues,
                         SQLiteDatabase.CONFLICT_REPLACE);
 
+        return getLastInserted(db);
+    }
+
+    private Member getLastInserted(DbHelper db){
+
+        Cursor cursor = db.getReadableDatabase()
+                .rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = last_insert_rowid();", null);
+
+        // not found
+        if (cursor.getCount() == 0) return null;
+
+        cursor.moveToFirst();
+        Long tmp_id = cursor.getLong(cursor.getColumnIndex("id"));
+        String tmp_name = cursor.getString(cursor.getColumnIndex("name"));
+        String tmp_phone = cursor.getString(cursor.getColumnIndex("phone"));
+        Long tmp_group_id = cursor.getLong(cursor.getColumnIndex("group_id"));
+
+        cursor.close();
+
+        return new Member(tmp_id, tmp_name, tmp_phone, tmp_group_id);
     }
 
     public static Member find(DbHelper db, Long id){

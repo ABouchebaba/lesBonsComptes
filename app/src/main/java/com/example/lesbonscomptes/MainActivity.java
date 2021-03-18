@@ -23,54 +23,61 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         db = new DbHelper(this);
 
-        // start from scratch
-        Participant.delete(db);
-        Expenditure.delete(db);
-        Member.delete(db);
-        Group.delete(db);
-        //////////////////////////////////////////////////////////
+        initDB(); // must be after init of variable db
 
-        Group g1 = new Group(1L, "G1");
-        g1.save(db); // insert in db
-
-        Group g2 = new Group(2L, "G2");
-        g2.save(db); // insert in db
-
-        /////////////////////////////////////////////////////////////////////////
-
-        Member m1 = new Member(1L, "amine", "099999999", g1.getId());
-        m1.save(db);
-
-        Member m2 = new Member(2L, "lol", "099999998", g2.getId());
-        m2.save(db);
-
-        Member m3 = new Member(null, "amine", "099999999", g1.getId());
-        m3.save(db);
-
-//        Expenditure e = new Expenditure(1L, 20.0f, new Date(), m1.getId());
-//        e.save(db);
-//
-//        Expenditure tmp = Expenditure.find(db, 1L);
-//        System.out.println(tmp.getDate().toString() + " -- " + tmp.getCost());
-        /////////////////////////////////////////////////////////////////////////
-
-        // this should also delete m1, m2 and e from db
-//        Group.delete(db, group.getId());
-//        m1 = Member.find(db, 1L);
-//        m2 = Member.find(db, 2L);
-//        e = Expenditure.find(db, 1L);
-
-//        System.out.println(Member.find(db).size());
-
-//        System.out.println(m1 == null && m2 == null && e == null);
-
-        /////////////////////////////////////////////////////////////////////////
-
-        List<Member> members = Member.findByGroupId(db, g1.getId());
+        List<Member> members = Member.findByGroupId(db, 1L);
         for (Member m : members){
             System.out.println(m.getName() + " " + m.getId());
         }
 
         setContentView(R.layout.activity_main);
+    }
+
+
+    private void initDB(){
+        // start from scratch
+
+        // Dropping tables
+        db.getWritableDatabase().execSQL(Participant.dropQuery());
+        db.getWritableDatabase().execSQL(Expenditure.dropQuery());
+        db.getWritableDatabase().execSQL(Member.dropQuery());
+        db.getWritableDatabase().execSQL(Group.dropQuery());
+
+        // Creating tables again
+        db.getWritableDatabase().execSQL(Group.createQuery());
+        db.getWritableDatabase().execSQL(Member.createQuery());
+        db.getWritableDatabase().execSQL(Expenditure.createQuery());
+        db.getWritableDatabase().execSQL(Participant.createQuery());
+
+        // Populate tables
+        Group g1 = new Group(null, "G1");
+        g1 = g1.save(db);
+
+        Group g2 = new Group(null, "G2");
+        g2 = g2.save(db);
+        ////////////////////////////////////////////////////
+
+        Member m1 = new Member(null, "m1", "099999999", g1.getId());
+        m1 = m1.save(db);
+
+        Member m2 = new Member(null, "m2", "088888888", g1.getId());
+        m2 = m2.save(db);
+
+        Member m3 = new Member(null, "m3", "077777777", g1.getId());
+        m3 = m3.save(db);
+        ///////////////////////////////////////////////////
+
+        Expenditure e1 = new Expenditure(null, 900.f, new Date(), "Tacos", m1.getId(), g1.getId() );
+        e1 = e1.save(db);
+
+        Expenditure e2 = new Expenditure(null, 600.f, new Date(), "Pizza", m2.getId(), g1.getId() );
+        e2 = e2.save(db);
+        ///////////////////////////////////////////////////
+
+        Participant p1 = new Participant(null, e1.getId(), m2.getId());
+        p1 = p1.save(db);
+
+        Participant p2 = new Participant(null, e1.getId(), m3.getId());
+        p2 = p2.save(db);
     }
 }
