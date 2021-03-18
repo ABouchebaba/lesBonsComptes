@@ -119,6 +119,27 @@ public class Participant {
         return participants;
     }
 
+    public static List<Member> findMembersByExpenditureId(DbHelper db, Long expenditureId){
+        String[] columns = new String[]{"id", "expenditure_id", "member_id"};
+        String[] sArgs = new String[]{""+expenditureId};
+
+        Cursor cursor = db.getReadableDatabase()
+                .query(TABLE_NAME, columns, "expenditure_id = ?", sArgs, null,null,null);
+
+        List<Member> participants = new ArrayList<>();
+
+        while (cursor.moveToNext()){
+//            Long tmp_id = cursor.getLong(cursor.getColumnIndex("id"));
+//            Long tmp_expenditure_id = cursor.getLong(cursor.getColumnIndex("expenditure_id"));
+            Long tmp_member_id = cursor.getLong(cursor.getColumnIndex("member_id"));
+
+            participants.add(Member.find(db, tmp_member_id));
+        }
+        cursor.close();
+
+        return participants;
+    }
+
     public static int delete(DbHelper dbHelper, Long id){
         String[] sArgs = new String[]{""+id};
         return dbHelper.getWritableDatabase().delete(TABLE_NAME, "id = ?", sArgs);
