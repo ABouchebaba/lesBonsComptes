@@ -51,7 +51,7 @@ public class MembersFragment extends Fragment {
 
         ListView membersListView = getView().findViewById(R.id.members_list);
         arrayAdapter.DBHELPER = new DbHelper(getContext());
-        arrayAdapter = new MembersAdapter(getContext(), R.layout.member_entry);
+        arrayAdapter = new MembersAdapter(getContext(), R.layout.member_entry, groupID);
         membersListView.setAdapter(arrayAdapter);
 
     }

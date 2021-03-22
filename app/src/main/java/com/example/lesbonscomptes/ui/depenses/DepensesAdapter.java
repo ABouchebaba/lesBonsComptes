@@ -25,10 +25,11 @@ public class DepensesAdapter extends ArrayAdapter {
     private final ArrayList<String[]> data;
     private final int layoutResourceId;
     public static DbHelper DBHELPER;
+    private static long GROUPID;
 
-
-    public DepensesAdapter(Context context, int layoutResourceId) {
+    public DepensesAdapter(Context context, int layoutResourceId, long groupID) {
         super(context, layoutResourceId, loadData());
+        GROUPID = groupID;
         this.context = context;
         this.data = loadData();
         this.layoutResourceId = layoutResourceId;
@@ -78,28 +79,13 @@ public class DepensesAdapter extends ArrayAdapter {
     }
 
     private static ArrayList<String[]> loadData(){
-        Date date = new Date(2021,4,15);
-        List<Expenditure> depenseList = new ArrayList();
-        depenseList.add(new Expenditure((long) 1, 100,   date, (long) 1));
-        depenseList.add(new Expenditure((long) 2, 200,   date, (long) 2));
-        depenseList.add(new Expenditure((long) 3, 136,   date, (long) 1));
-        depenseList.add(new Expenditure((long) 4, 215,   date, (long) 2));
-        depenseList.add(new Expenditure((long) 5, 81,   date, (long) 1));
-        depenseList.add(new Expenditure((long) 6, 20,   date, (long) 2));
-        depenseList.add(new Expenditure((long) 7, 36,   date, (long) 1));
-        depenseList.add(new Expenditure((long) 8, 30,   date, (long) 1));
+        List<Expenditure> depenseList = Expenditure.findByGroupId(DBHELPER, GROUPID);
         ArrayList<String[]> list = new ArrayList();
-
-//        depenseList = Expenditure.find(DBHELPER);
-
         for(Expenditure depense : depenseList){
             Member payer = Member.find(DBHELPER, depense.getPayerId());
-            list.add( new String[] {depense.getId().toString(), "TITLE", payer.getName(), depense.getCost()+""});
-            depense.save(DBHELPER);
+            list.add( new String[] {depense.getId().toString(), depense.getTitle(), payer.getName(), depense.getCost()+""});
         }
-
         return  list;
-
     }
 
     public void updateList(){

@@ -23,10 +23,12 @@ public class MembersAdapter extends ArrayAdapter {
     private final ArrayList<String[]> data;
     private final int layoutResourceId;
     public static DbHelper DBHELPER;
+    private static long GROUPID;
 
 
-    public MembersAdapter(Context context, int layoutResourceId) {
+    public MembersAdapter(Context context, int layoutResourceId, long groupID) {
         super(context, layoutResourceId, loadData());
+        GROUPID = groupID;
         this.context = context;
         this.data = loadData();
         this.layoutResourceId = layoutResourceId;
@@ -73,31 +75,12 @@ public class MembersAdapter extends ArrayAdapter {
     }
 
     private static ArrayList<String[]> loadData(){
-
-        List<Member> membersList = new ArrayList();
-        new Group((long)1, "G1").save(DBHELPER);
-        new Group((long)2, "G2").save(DBHELPER);
-        membersList.add(new Member((long) 1, "Chems",   "0766685331", (long) 1));
-        membersList.add(new Member((long) 2, "Sofiane", "0678953100", (long) 1));
-        membersList.add(new Member((long) 3, "Amine",   "0681100237", (long) 1));
-        membersList.add(new Member((long) 4, "Salim",   "0699190159", (long) 1));
-        membersList.add(new Member((long) 5, "Noura",   "0659100635", (long) 1));
-        membersList.add(new Member((long) 6, "Samir",   "0660541935", (long) 2));
-        membersList.add(new Member((long) 7, "Asma",    "0689100980", (long) 1));
-        membersList.add(new Member((long) 8, "Asia",    "0689100980", (long) 1));
-        membersList.add(new Member((long) 9, "Kamel",    "0689100980", (long) 1));
-        membersList.add(new Member((long) 10, "Wahid",    "0689100980", (long) 1));
+        List<Member> membersList = Member.findByGroupId(DBHELPER, GROUPID);
         ArrayList<String[]> list = new ArrayList();
-
-//        membersList = Member.find(DBHELPER);
-
         for(Member member : membersList){
             list.add( new String[] {member.getId().toString(), member.getName(), member.getPhone()});
-            member.save(DBHELPER);
         }
-
         return  list;
-
     }
 
     public void updateList(){

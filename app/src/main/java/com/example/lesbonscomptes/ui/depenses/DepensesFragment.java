@@ -18,6 +18,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.lesbonscomptes.R;
 import com.example.lesbonscomptes.db.DbHelper;
+import com.example.lesbonscomptes.models.Member;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DepensesFragment extends Fragment {
 
@@ -45,7 +49,7 @@ public class DepensesFragment extends Fragment {
 
         ListView membersListView = getView().findViewById(R.id.depenses_list);
         arrayAdapter.DBHELPER = new DbHelper(getContext());
-        arrayAdapter = new DepensesAdapter(getContext(), R.layout.depense_entry);
+        arrayAdapter = new DepensesAdapter(getContext(), R.layout.depense_entry, groupID);
         membersListView.setAdapter(arrayAdapter);
 
         getView().findViewById(R.id.add_depense_btn).setOnClickListener(v -> {
@@ -56,8 +60,19 @@ public class DepensesFragment extends Fragment {
 
     private void edit_new_depense()
     {
-
-        DialogFragment newFragment = EditDepenseFragment.newInstance("p1", "p2");
+        List<Member> membersList = Member.findByGroupId(arrayAdapter.DBHELPER, groupID);
+        ArrayList<String> membersNames = new ArrayList();
+        ArrayList<Long> membersIds = new ArrayList();
+        for(Member member : membersList){
+            membersNames.add( member.getName());
+            membersIds.add( member.getId());
+        }
+        long[] ids = new long[membersIds.size()];
+        int index = 0;
+        for (final Long value : membersIds) {
+            ids[index++] = value;
+        }
+        DialogFragment newFragment = EditDepenseFragment.newInstance(membersNames, ids);
         newFragment.show(getFragmentManager(), "dialog");
 
 

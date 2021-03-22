@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".RecapActivity"
     android:orientation="vertical">
-
 
     <ScrollView
 
@@ -16,25 +15,24 @@
         android:background="#F0F0F0">
 
         <LinearLayout
-            android:id="@+id/groupsList"
+            android:id="@+id/recapList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:orientation="vertical">
+
 
         </LinearLayout>
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
-        android:layout_width="wrap_content"
+        android:id="@+id/floatingActionButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"
         android:clickable="true"
-        android:onClick="addGroup"
-        app:srcCompat="@android:drawable/ic_menu_add"/>
-
+        android:onClick="justToSee"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </LinearLayout>

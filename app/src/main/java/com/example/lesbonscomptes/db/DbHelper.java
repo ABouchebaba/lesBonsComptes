@@ -12,7 +12,7 @@ import com.example.lesbonscomptes.models.Participant;
 public class DbHelper extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "les_bons_comptes";
-    private final static int DB_VERSION = 2;
+    private final static int DB_VERSION = 4;
 
     public DbHelper ( Context context ) {
         super ( context , DB_NAME , null , DB_VERSION ) ;
@@ -43,9 +43,4 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("PRAGMA foreign_keys=ON;");
     }
 
-//    @Override
-//    public void onOpen(SQLiteDatabase db){
-//        super.onOpen(db);
-//        db.execSQL("PRAGMA foreign_keys=ON");
-//    }
 }
