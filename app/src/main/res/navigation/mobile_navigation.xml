@@ -3,18 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_depenses">
+    app:startDestination="@+id/navigation_members">
 
-    <fragment
-        android:id="@+id/navigation_depenses"
-        android:name="com.example.lesbonscomptes.ui.depenses.DepensesFragment"
-        android:label="@string/title_depense"
-        tools:layout="@layout/fragment_depenses" />
+
 
     <fragment
         android:id="@+id/navigation_members"
         android:name="com.example.lesbonscomptes.ui.membres.MembersFragment"
         android:label="@string/title_members"
         tools:layout="@layout/fragment_members" />
+
+    <fragment
+        android:id="@+id/navigation_depenses"
+        android:name="com.example.lesbonscomptes.ui.depenses.DepensesFragment"
+        android:label="@string/title_depense"
+        tools:layout="@layout/fragment_depenses" />
 
 </navigation>

@@ -2,6 +2,7 @@ package com.example.lesbonscomptes.ui.depenses;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +19,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.lesbonscomptes.R;
+import com.example.lesbonscomptes.RecapActivity;
 import com.example.lesbonscomptes.db.DbHelper;
 import com.example.lesbonscomptes.models.Expenditure;
+import com.example.lesbonscomptes.models.Group;
 import com.example.lesbonscomptes.models.Member;
 
 import java.util.ArrayList;
@@ -29,7 +32,7 @@ public class DepensesFragment extends Fragment {
 
     private DepensesViewModel depensesViewModel;
     public DepensesAdapter arrayAdapter;
-    private long groupID = 1; //This param should be passed when opening a group
+    private long groupID = 0; //This param should be passed when opening a group
     private ViewGroup container;
 
 
@@ -42,6 +45,7 @@ public class DepensesFragment extends Fragment {
             public void onChanged(@Nullable String s) {
             }
         });
+        groupID = Group.GROUPID;
         return root;
     }
 
@@ -63,6 +67,13 @@ public class DepensesFragment extends Fragment {
             Long depense_id = Long.parseLong(((View) getView().getParent()).findViewById(R.id.depense_title).getTag().toString());
             Expenditure depense = Expenditure.find(arrayAdapter.DBHELPER, depense_id);
             edit_depense(depense);
+        });
+
+        getView().findViewById(R.id.recap_btn).setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), RecapActivity.class);
+
+            intent.putExtra("groupId",String.valueOf(Group.GROUPID));
+            startActivity(intent);
         });
 
     }

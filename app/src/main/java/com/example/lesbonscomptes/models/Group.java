@@ -12,6 +12,7 @@ import java.util.List;
 public class Group {
 
     private final static String TABLE_NAME = "groups";
+    public static long GROUPID=0;
 
     private Long id;
     private String name;
