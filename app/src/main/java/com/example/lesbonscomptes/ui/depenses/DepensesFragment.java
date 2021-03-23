@@ -1,6 +1,7 @@
 package com.example.lesbonscomptes.ui.depenses;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.lesbonscomptes.R;
 import com.example.lesbonscomptes.db.DbHelper;
+import com.example.lesbonscomptes.models.Expenditure;
 import com.example.lesbonscomptes.models.Member;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ import java.util.List;
 public class DepensesFragment extends Fragment {
 
     private DepensesViewModel depensesViewModel;
-    private DepensesAdapter arrayAdapter;
+    public DepensesAdapter arrayAdapter;
     private long groupID = 1; //This param should be passed when opening a group
     private ViewGroup container;
 
@@ -49,16 +51,31 @@ public class DepensesFragment extends Fragment {
 
         ListView membersListView = getView().findViewById(R.id.depenses_list);
         arrayAdapter.DBHELPER = new DbHelper(getContext());
-        arrayAdapter = new DepensesAdapter(getContext(), R.layout.depense_entry, groupID);
+        arrayAdapter = new DepensesAdapter(getContext(), R.layout.depense_entry, groupID, this);
         membersListView.setAdapter(arrayAdapter);
 
         getView().findViewById(R.id.add_depense_btn).setOnClickListener(v -> {
-            edit_new_depense();
+            new_depense();
+        });
+
+        ListView depenseList = getView().findViewById(R.id.depenses_list);
+        depenseList.setOnItemClickListener((parent, view1, position, id) -> {
+            Long depense_id = Long.parseLong(((View) getView().getParent()).findViewById(R.id.depense_title).getTag().toString());
+            Expenditure depense = Expenditure.find(arrayAdapter.DBHELPER, depense_id);
+            edit_depense(depense);
         });
 
     }
 
-    private void edit_new_depense()
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        arrayAdapter.updateList();
+    }
+
+    private void new_depense()
     {
         List<Member> membersList = Member.findByGroupId(arrayAdapter.DBHELPER, groupID);
         ArrayList<String> membersNames = new ArrayList();
@@ -72,11 +89,32 @@ public class DepensesFragment extends Fragment {
         for (final Long value : membersIds) {
             ids[index++] = value;
         }
-        DialogFragment newFragment = EditDepenseFragment.newInstance(membersNames, ids);
+        DialogFragment newFragment = EditDepenseFragment.newInstance(membersNames, ids, groupID, 0);
         newFragment.show(getFragmentManager(), "dialog");
+        getFragmentManager().executePendingTransactions();
+        newFragment.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                arrayAdapter.updateList();
+            }
+        });
+    }
 
-
-
+    public void edit_depense(Expenditure depense) {
+        List<Member> membersList = Member.findByGroupId(arrayAdapter.DBHELPER, groupID);
+        ArrayList<String> membersNames = new ArrayList();
+        ArrayList<Long> membersIds = new ArrayList();
+        for(Member member : membersList){
+            membersNames.add( member.getName());
+            membersIds.add( member.getId());
+        }
+        long[] ids = new long[membersIds.size()];
+        int index = 0;
+        for (final Long value : membersIds) {
+            ids[index++] = value;
+        }
+        DialogFragment newFragment = EditDepenseFragment.newInstance(membersNames, ids, groupID, depense.getId());
+        newFragment.show(getFragmentManager(), "dialog");
     }
 
 }

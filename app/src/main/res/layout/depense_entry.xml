@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     >
 
     <TextView
+        android:focusable="false"
         android:id="@+id/depense_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,6 +21,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:focusable="false"
+        android:clickable="false"
         android:id="@+id/depense_payer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,17 +35,33 @@
         app:layout_constraintTop_toBottomOf="@+id/depense_title" />
 
     <ImageButton
-        android:id="@+id/delete_depense_btn"
+        android:id="@+id/detail_depense_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:clickable="false"
+        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.491"
+        app:layout_constraintVertical_bias="0.3"
+        app:srcCompat="@drawable/ic_baseline_read_more_24" />
+
+    <ImageButton
+        android:id="@+id/delete_depense_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/detail_depense_btn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3"
         app:srcCompat="@drawable/ic_baseline_delete_24" />
 
     <TextView
+        android:focusable="false"
+        android:clickable="false"
         android:id="@+id/depense_cost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,6 +75,8 @@
         app:layout_constraintStart_toEndOf="@+id/depense_payer" />
 
     <TextView
+        android:focusable="false"
+        android:clickable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

@@ -20,7 +20,7 @@ public class MembersAdapter extends ArrayAdapter {
 
 
     private final Context context;
-    private final ArrayList<String[]> data;
+    private ArrayList<String[]> data;
     private final int layoutResourceId;
     public static DbHelper DBHELPER;
     private static long GROUPID;
@@ -86,6 +86,7 @@ public class MembersAdapter extends ArrayAdapter {
     public void updateList(){
 
         List<String[]> members = loadData();
+        this.data = loadData();
         this.clear();
         this.addAll(members);
         this.notifyDataSetChanged();

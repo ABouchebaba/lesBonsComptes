@@ -1,5 +1,7 @@
 package com.example.lesbonscomptes.ui.depenses;
 
+import androidx.fragment.app.Fragment;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -7,7 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.lesbonscomptes.R;
 import com.example.lesbonscomptes.db.DbHelper;
@@ -22,13 +29,15 @@ public class DepensesAdapter extends ArrayAdapter {
 
 
     private final Context context;
-    private final ArrayList<String[]> data;
+    private final Fragment fragment;
+    private ArrayList<String[]> data;
     private final int layoutResourceId;
     public static DbHelper DBHELPER;
     private static long GROUPID;
 
-    public DepensesAdapter(Context context, int layoutResourceId, long groupID) {
+    public DepensesAdapter(Context context, int layoutResourceId, long groupID, Fragment fragment) {
         super(context, layoutResourceId, loadData());
+        this.fragment=fragment;
         GROUPID = groupID;
         this.context = context;
         this.data = loadData();
@@ -53,7 +62,9 @@ public class DepensesAdapter extends ArrayAdapter {
 
             row.setTag(holder);
 
+
             row.findViewById(R.id.delete_depense_btn).setOnClickListener(this::delete_depense);
+            row.findViewById(R.id.detail_depense_btn).setOnClickListener(this::detail_depense);
         }
         else
         {
@@ -69,6 +80,8 @@ public class DepensesAdapter extends ArrayAdapter {
 
         return row;
     }
+
+
 
     static class ViewHolder
     {
@@ -90,13 +103,18 @@ public class DepensesAdapter extends ArrayAdapter {
 
     public void updateList(){
 
-        List<String[]> depenses = loadData();
+        ArrayList<String[]> depenses = loadData();
+        this.data = depenses;
         this.clear();
         this.addAll(depenses);
         this.notifyDataSetChanged();
     }
 
-
+    private void detail_depense(View v) {
+        Long depense_id = Long.parseLong(((View) v.getParent()).findViewById(R.id.depense_title).getTag().toString());
+        Expenditure depense = Expenditure.find(DBHELPER, depense_id);
+        edit_depense(depense);
+    }
 
     public void delete_depense(View v){
         Long depense_id = Long.parseLong(((View) v.getParent()).findViewById(R.id.depense_title).getTag().toString());
@@ -105,6 +123,22 @@ public class DepensesAdapter extends ArrayAdapter {
         Log.d("DELETE DEPENSE", "delete_depense: "+depense_id);
     }
 
+    public void edit_depense(Expenditure depense) {
+        List<Member> membersList = Member.findByGroupId(this.DBHELPER, GROUPID);
+        ArrayList<String> membersNames = new ArrayList();
+        ArrayList<Long> membersIds = new ArrayList();
+        for(Member member : membersList){
+            membersNames.add( member.getName());
+            membersIds.add( member.getId());
+        }
+        long[] ids = new long[membersIds.size()];
+        int index = 0;
+        for (final Long value : membersIds) {
+            ids[index++] = value;
+        }
+        DialogFragment newFragment = EditDepenseFragment.newInstance(membersNames, ids, GROUPID, depense.getId());
+        newFragment.show(this.fragment.getFragmentManager(), "dialog");
+    }
 
 
 

@@ -6,6 +6,7 @@ import com.example.lesbonscomptes.db.DbHelper;
 import com.example.lesbonscomptes.models.Expenditure;
 import com.example.lesbonscomptes.models.Group;
 import com.example.lesbonscomptes.models.Member;
+import com.example.lesbonscomptes.models.Participant;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -72,6 +73,20 @@ public class GroupActivity extends AppCompatActivity {
         depenseList.add(new Expenditure((long) 9, (float) 3.4,   date, "Autres",(long) 1, (long)2));
         for(Expenditure depense : depenseList){
             depense.save(DBHELPER);
+        }
+        List<Participant> participantList = new ArrayList();
+        participantList.add(new Participant(null,(long)1,(long)1));
+        participantList.add(new Participant(null,(long)1,(long)3));
+        participantList.add(new Participant(null,(long)1,(long)4));
+        participantList.add(new Participant(null,(long)1,(long)5));
+        participantList.add(new Participant(null,(long)2,(long)1));
+        participantList.add(new Participant(null,(long)2,(long)3));
+        participantList.add(new Participant(null,(long)2,(long)4));
+        participantList.add(new Participant(null,(long)2,(long)5));
+        participantList.add(new Participant(null,(long)3,(long)9));
+        participantList.add(new Participant(null,(long)2,(long)10));
+        for(Participant p : participantList){
+            p.save(DBHELPER);
         }
 
 
