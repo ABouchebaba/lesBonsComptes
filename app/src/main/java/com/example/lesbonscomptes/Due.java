@@ -1,3 +1,4 @@
+
 package com.example.lesbonscomptes;
 
 import com.example.lesbonscomptes.db.DbHelper;
@@ -5,16 +6,21 @@ import com.example.lesbonscomptes.models.Member;
 
 public class Due {
 
-    private static DbHelper db;
     private Member member;
-    private int totalDue;
+    private float totalDue;
 
-    public Due(long idMember){
-        member = Member.find(db,idMember);
-        totalDue = 0;
+    public Due(DbHelper db, long idMember, float dueAmount){
+        this.member  = Member.find(db,idMember);
+        this.totalDue = dueAmount;
     }
 
     public Member getMember(){return member;}
-    public int getTotalDue(){return totalDue;}
-    public void addToDue(int aDue){ this.totalDue = this.totalDue + aDue;}
+    public float getTotalDue(){return totalDue;}
+
+    public void increaseDue(float increaseAmount){
+        this.totalDue = this.totalDue + increaseAmount;
+    }
+    public void decreaseDue(float decreaseAmount){
+        this.totalDue = this.totalDue - decreaseAmount;
+    }
 }
