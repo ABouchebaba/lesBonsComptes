@@ -1,5 +1,6 @@
 package com.example.lesbonscomptes;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -7,9 +8,11 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -85,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    @SuppressLint("ResourceAsColor")
     public void refreshView(){
 
         mGroupsListLayout.removeAllViews();
@@ -95,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
             LinearLayout group = new LinearLayout(getApplicationContext());
             group.setTag(g);
             group.setMinimumWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-            group.setMinimumHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-            group.setPadding(100,5,5,5);
+            group.setMinimumHeight(LinearLayout.LayoutParams.MATCH_PARENT);
+            group.setPadding(100,5,5,50);
             group.setOrientation(LinearLayout.HORIZONTAL);
 
 
@@ -104,13 +108,14 @@ public class MainActivity extends AppCompatActivity {
 
             delete.setText("Delete");
             delete.setTextColor(Color.WHITE);
+            delete.setBackgroundColor(R.color.red);
             delete.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-
 
 
             TextView groupName = new TextView(getApplicationContext());
             groupName.setTextColor(Color.BLACK);
             groupName.setTextSize(20);
+            groupName.setPadding(100,0,0,0);
             groupName.setGravity(Gravity.CENTER_HORIZONTAL);
             groupName.setText(g.getName());
 
@@ -165,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            group.addView(groupName);
             group.addView(delete);
+            group.addView(groupName);
             mGroupsListLayout.addView(group);
         }
     }

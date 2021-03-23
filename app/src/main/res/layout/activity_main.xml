@@ -11,9 +11,8 @@
     <ScrollView
 
         android:layout_width="match_parent"
-        android:layout_height="644dp"
-        android:layout_weight="1"
-        android:background="#F0F0F0">
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
         <LinearLayout
             android:id="@+id/groupsList"
@@ -34,7 +33,7 @@
         android:layout_marginTop="20dp"
         android:clickable="true"
         android:onClick="addGroup"
-        app:srcCompat="@android:drawable/ic_menu_add"/>
+        app:srcCompat="@drawable/ic_baseline_group_add_24"/>
 
 
 </LinearLayout>

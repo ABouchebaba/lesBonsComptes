@@ -43,6 +43,8 @@ public class GroupActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         Group.GROUPID = Long.parseLong(getIntent().getStringExtra("groupId"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
 }

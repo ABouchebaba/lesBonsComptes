@@ -47,6 +47,7 @@ public class DepensesFragment extends Fragment {
         });
         groupID = Group.GROUPID;
         return root;
+
     }
 
     @Override
