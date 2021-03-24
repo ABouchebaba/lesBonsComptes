@@ -195,7 +195,7 @@ public class EditDepenseFragment extends DialogFragment {
 
         //Cancel Button
         getView().findViewById(R.id.cancel_btn).setOnClickListener(v->{
-            getDialog().dismiss();
+            getDialog().cancel();
         });
 
         //depenseId !=0 (not creating)

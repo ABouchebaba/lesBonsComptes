@@ -85,5 +85,11 @@ public class AddMemberFragment extends DialogFragment {
             member.save(DBHELPER);
             getDialog().dismiss();
         });
+
+        //Cancel Button
+        getView().findViewById(R.id.cancel_member_btn).setOnClickListener(v->{
+            getDialog().cancel();
+        });
+
     }
 }

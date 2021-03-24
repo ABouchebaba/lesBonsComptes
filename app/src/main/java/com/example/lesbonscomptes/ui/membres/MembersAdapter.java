@@ -2,12 +2,19 @@ package com.example.lesbonscomptes.ui.membres;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
+import com.example.lesbonscomptes.MainActivity;
 import com.example.lesbonscomptes.R;
 import com.example.lesbonscomptes.db.DbHelper;
 import com.example.lesbonscomptes.models.Group;
@@ -51,7 +58,38 @@ public class MembersAdapter extends ArrayAdapter {
 
             row.setTag(holder);
 
-            row.findViewById(R.id.delete_member_btn).setOnClickListener(this::delete_member);
+            ImageButton delete_member_btn = row.findViewById(R.id.delete_member_btn);
+
+            delete_member_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                    builder.setTitle("Confimation");
+
+                    builder.setMessage("Supprimer le membre ?");
+
+                    Long member_id = Long.parseLong(((View) delete_member_btn.getParent()).findViewById(R.id.member_name).getTag().toString());
+
+                    builder.setPositiveButton("Oui",(dialog, which) -> {
+                        delete_member(member_id);
+                    });
+
+                    // Set the alert dialog no button click listener
+                    builder.setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    // Display the alert dialog on interface
+                    dialog.show();
+                }
+            });
         }
         else
         {
@@ -94,10 +132,8 @@ public class MembersAdapter extends ArrayAdapter {
 
 
 
-    public void delete_member(View v){
-        Long member_id = Long.parseLong(((View) v.getParent()).findViewById(R.id.member_name).getTag().toString());
+    public void delete_member(long member_id){
         Member.delete(DBHELPER, member_id);
-        this.updateList();
         this.updateList();
     }
 

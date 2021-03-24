@@ -1,14 +1,18 @@
 package com.example.lesbonscomptes.ui.depenses;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -62,9 +66,40 @@ public class DepensesAdapter extends ArrayAdapter {
 
             row.setTag(holder);
 
-
-            row.findViewById(R.id.delete_depense_btn).setOnClickListener(this::delete_depense);
             row.findViewById(R.id.detail_depense_btn).setOnClickListener(this::detail_depense);
+
+            ImageButton delete_depense_btn = row.findViewById(R.id.delete_depense_btn);
+
+            delete_depense_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                    builder.setTitle("Confimation");
+
+                    builder.setMessage("Supprimer la dépense ?");
+
+                    Long depense_id = Long.parseLong(((View) delete_depense_btn.getParent()).findViewById(R.id.depense_title).getTag().toString());
+
+                    builder.setPositiveButton("Oui",(dialog, which) -> {
+                        delete_depense(depense_id);
+                    });
+
+                    // Set the alert dialog no button click listener
+                    builder.setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    // Display the alert dialog on interface
+                    dialog.show();
+                }
+            });
         }
         else
         {
@@ -116,11 +151,9 @@ public class DepensesAdapter extends ArrayAdapter {
         edit_depense(depense);
     }
 
-    public void delete_depense(View v){
-        Long depense_id = Long.parseLong(((View) v.getParent()).findViewById(R.id.depense_title).getTag().toString());
+    public void delete_depense(long depense_id){
         Expenditure.delete(DBHELPER, depense_id);
         this.updateList();
-        Log.d("DELETE DEPENSE", "delete_depense: "+depense_id);
     }
 
     public void edit_depense(Expenditure depense) {
