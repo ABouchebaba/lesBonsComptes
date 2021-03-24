@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -77,6 +78,8 @@ public class DepensesFragment extends Fragment {
             startActivity(intent);
         });
 
+        Group g = Group.find(arrayAdapter.DBHELPER, groupID);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(g.getName());
     }
 
 
