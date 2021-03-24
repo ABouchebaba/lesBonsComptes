@@ -38,7 +38,7 @@ public class DepensesFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         this.container = container;
-        depensesViewModel =                new ViewModelProvider(this).get(DepensesViewModel.class);
+        depensesViewModel =  new ViewModelProvider(this).get(DepensesViewModel.class);
         View root = inflater.inflate(R.layout.fragment_depenses, container, false);
         depensesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override

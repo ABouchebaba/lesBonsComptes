@@ -1,5 +1,6 @@
 package com.example.lesbonscomptes.ui.depenses;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -28,10 +29,12 @@ import com.example.lesbonscomptes.models.Expenditure;
 import com.example.lesbonscomptes.models.Member;
 import com.example.lesbonscomptes.models.Participant;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -56,6 +59,8 @@ public class EditDepenseFragment extends DialogFragment {
     private long[] membersIDs;
     private long groupId;
     private long depenseId;
+
+    private DatePickerDialog picker;
 
     public EditDepenseFragment() {
         // Required empty public constructor
@@ -98,13 +103,9 @@ public class EditDepenseFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         return inflater.inflate(R.layout.fragment_edit_depense, container, false);
-
     }
 
     @Override
@@ -123,29 +124,59 @@ public class EditDepenseFragment extends DialogFragment {
         ListView participantsListView = getView().findViewById(R.id.participantsListView);
         participantsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
-        participantsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CheckedTextView v = (CheckedTextView) view;
-                boolean currentCheck = v.isChecked();
-            }
-        });
+//        participantsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                CheckedTextView v = (CheckedTextView) view;
+//                boolean currentCheck = v.isChecked();
+//                System.out.println("click");
+//            }
+//        });
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_checked , membersNames);
         participantsListView.setAdapter(arrayAdapter);
+
+
+        EditText dateET = getView().findViewById(R.id.dateET);
+        dateET.setEnabled(true);
+        dateET.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                picker = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                System.out.println("selected : " + dayOfMonth + "/" + monthOfYear + "/" + year);
+                                dateET.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
 
         //Save Button
         getView().findViewById(R.id.save_depense_btn).setOnClickListener(v -> {
             long payeurId = this.membersIDs[payeurSpinner.getSelectedItemPosition()];
             EditText titleET = getView().findViewById(R.id.titleET);
             EditText sommeET = getView().findViewById(R.id.sommeET);
-            EditText dateET = getView().findViewById(R.id.dateET);
+//            EditText dateET = getView().findViewById(R.id.dateET);
 
+            String[] date_elements = dateET.getText().toString().split("/");
+            int year = Integer.parseInt(date_elements[2]);
+            int month = Integer.parseInt(date_elements[1]) - 1;
+            int dayOfMonth = Integer.parseInt(date_elements[0]);
+
+            Date date = new GregorianCalendar(year, month , dayOfMonth).getTime();
             float somme = Float.parseFloat(sommeET.getText().toString());
             String title = titleET.getText().toString();
-//            Date date = new Date(dateET.getYear(), dateET.getMonth(), dateET.getDayOfMonth());
             Expenditure depense;
-            depense = new Expenditure(null, somme, new Date(2021,4,1), title, payeurId, groupId);
+            depense = new Expenditure(null, somme, date, title, payeurId, groupId);
             depense = depense.save(DBHELPER);
 
             //Participants
@@ -172,10 +203,14 @@ public class EditDepenseFragment extends DialogFragment {
             Expenditure depense = Expenditure.find(DBHELPER, depenseId);
             EditText titleET = getView().findViewById(R.id.titleET);
             EditText sommeET = getView().findViewById(R.id.sommeET);
-            EditText dateET = getView().findViewById(R.id.dateET);
+//            EditText dateET = getView().findViewById(R.id.dateET);
             titleET.setText(depense.getTitle());
             sommeET.setText(""+depense.getCost());
-            dateET.setText(""+depense.getDate().getDay()+"/"+depense.getDate().getMonth()+"/"+depense.getDate().getYear()+"");
+
+            dateET.setEnabled(false);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            dateET.setText(formatter.format(depense.getDate()));
+
             int payeurPosition = getPosition(membersIDs, depense.getPayerId());
             payeurSpinner.setSelection(payeurPosition);
             List<Participant> participantList = Participant.findByExpenditureId(DBHELPER, depenseId);
